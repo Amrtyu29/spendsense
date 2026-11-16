@@ -328,7 +328,7 @@ def write_results_md(res: dict) -> None:
     L += ["", "Online learning (accuracy on the last 300 test transactions):", ""]
     for k, v in e1["online_learning_final_accuracy_last300"].items():
         L.append(f"- {k}: {v:.1%}")
-    L += ["", "![](outputs/e1_confusion_matrix.png)", "![](outputs/e1_online_learning.png)", ""]
+    L += ["", "![](e1_confusion_matrix.png)", "![](e1_online_learning.png)", ""]
     L += ["## E2 Anomaly / fraud detection", "",
           f"{e2['n_transactions']} test transactions over 5 seeds x 12 months, {e2['n_anomalies']} anomalous.", "",
           "| Detector | Precision@0.5 | Recall@0.5 | F1@0.5 | Avg precision | Flags raised |", "|---|---|---|---|---|---|"]
@@ -336,7 +336,7 @@ def write_results_md(res: dict) -> None:
         L.append(f"| {name} | {m['precision@0.5']:.2f} | {m['recall@0.5']:.2f} | {m['f1@0.5']:.2f} | {m['average_precision']:.2f} | {m['flags']} |")
     L += ["", "Recall of our detector by anomaly type: " +
           ", ".join(f"{k} {v:.0%}" for k, v in e2["detectors"]["ours"]["recall_by_type"].items()), "",
-          "![](outputs/e2_anomaly_pr_curve.png)", ""]
+          "![](e2_anomaly_pr_curve.png)", ""]
     L += ["## E3 Agent policy comparison (12 months x 5 seeds, means)", "",
           "| Metric | Passive tracker | Rule-based agent | Utility agent (ours) |", "|---|---|---|---|"]
     for key, label in [("total_overspend", "Category overspend vs original budgets (Rs)"), ("overspend_reduction_vs_passive", "Overspend reduction vs passive"),
@@ -352,13 +352,13 @@ def write_results_md(res: dict) -> None:
                 return "-"
             return f"{v:.1%}" if key in ("overspend_reduction_vs_passive", "alert_precision") else f"{v:g}"
         L.append(f"| {label} | {fmt(e3['none'][key])} | {fmt(e3['rule'][key])} | {fmt(e3['utility'][key])} |")
-    L += ["", "![](outputs/e3_policy_comparison.png)", "![](outputs/e3_monthly_overspend.png)",
-          "![](outputs/e3_user_model_learning.png)", ""]
+    L += ["", "![](e3_policy_comparison.png)", "![](e3_monthly_overspend.png)",
+          "![](e3_user_model_learning.png)", ""]
     L += ["## E4 Sensitivity to the annoyance cost", "", "| fatigue cost | alerts / year | overspend / year (Rs) | dismissed |", "|---|---|---|---|"]
     for p in e4["points"]:
         L.append(f"| {p['fatigue_cost']} | {p['alerts']} | {p['overspend']:.0f} | {p['dismissed']} |")
     L += [f"| rule-based | {e4['rule_based']['alerts']:.1f} | {e4['rule_based']['overspend']:.0f} | - |", "",
-          "![](outputs/e4_sensitivity.png)", ""]
+          "![](e4_sensitivity.png)", ""]
     (OUT / "RESULTS.md").write_text("\n".join(L), encoding="utf-8")
 
 

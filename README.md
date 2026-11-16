@@ -13,11 +13,12 @@ forecasting, expected-utility decision making and Beta-Bernoulli learning.
 
 | Document | What it contains |
 |---|---|
-| [REPORT.md](REPORT.md) | Problem definition, agent architecture, algorithms, decision process, demonstration, evaluation |
+| [REPORT.md](REPORT.md) ([PDF](REPORT.pdf)) | Problem definition, agent architecture, algorithms, decision process, demonstration, evaluation |
+| [SpendSense_Presentation.pptx](SpendSense_Presentation.pptx) | The 8-slide presentation, editable, with speaker notes |
 | [outputs/RESULTS.md](outputs/RESULTS.md) | Auto-generated evaluation tables and figures |
 | [outputs/demo_log.txt](outputs/demo_log.txt) | One full month of the agent, day by day, with its reasoning |
 | [VIVA_NOTES.md](VIVA_NOTES.md) | Likely viva questions with answers |
-| [PRESENTATION_OUTLINE.md](PRESENTATION_OUTLINE.md) | Slide-by-slide outline for the presentation |
+| [PRESENTATION_OUTLINE.md](PRESENTATION_OUTLINE.md) | Slide-by-slide talking points for the presentation and the live demo plan |
 
 ## Quick start
 

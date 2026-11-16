@@ -17,8 +17,8 @@ Online learning (accuracy on the last 300 test transactions):
 - 30% of errors corrected: 98.0%
 - all errors corrected: 99.7%
 
-![](outputs/e1_confusion_matrix.png)
-![](outputs/e1_online_learning.png)
+![](e1_confusion_matrix.png)
+![](e1_online_learning.png)
 
 ## E2 Anomaly / fraud detection
 
@@ -32,7 +32,7 @@ Online learning (accuracy on the last 300 test transactions):
 
 Recall of our detector by anomaly type: burst 65%, duplicate 100%, large_amount 80%, unknown_night 100%
 
-![](outputs/e2_anomaly_pr_curve.png)
+![](e2_anomaly_pr_curve.png)
 
 ## E3 Agent policy comparison (12 months x 5 seeds, means)
 
@@ -54,9 +54,9 @@ Recall of our detector by anomaly type: burst 65%, duplicate 100%, large_amount 
 | Category questions asked, month 1 | 0 | 7.8 | 7 |
 | Category questions asked, month 12 | 0 | 0.4 | 0.6 |
 
-![](outputs/e3_policy_comparison.png)
-![](outputs/e3_monthly_overspend.png)
-![](outputs/e3_user_model_learning.png)
+![](e3_policy_comparison.png)
+![](e3_monthly_overspend.png)
+![](e3_user_model_learning.png)
 
 ## E4 Sensitivity to the annoyance cost
 
@@ -69,4 +69,4 @@ Recall of our detector by anomaly type: burst 65%, duplicate 100%, large_amount 
 | 320 | 33.3 | 31391 | 6.3 |
 | rule-based | 60.7 | 35760 | - |
 
-![](outputs/e4_sensitivity.png)
+![](e4_sensitivity.png)

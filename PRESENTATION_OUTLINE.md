@@ -1,54 +1,60 @@
-# Presentation outline (12 slides, about 10 minutes)
+# Presentation outline (8 slides, about 10 minutes)
 
-Figures are in `outputs/`. Keep text on slides short; say the rest.
+This matches `SpendSense_Presentation.pptx`. Every slide has speaker notes in the
+file; this page is the short version to rehearse from. Aim for a little over a
+minute per slide and keep two minutes for the live demo.
 
-1. **Title.** SpendSense: a Smart Expense & Budget Agent. Name, roll number, course.
+1. **Title.** SpendSense: An Intelligent AI Financial Assistant. Point at the
+   dashboard on the right: it previews what the agent produces, a budget
+   projection, categorised payments, and risk decisions with evidence.
 
-2. **The problem.** People overspend without noticing. Bank apps show a list, not a
-   decision. Three things a human money-coach does: categorise, forecast, intervene
-   at the right moment. Fraud catches on top. One line on scope: personal budgets,
-   local on-device.
+2. **Problem and solution.** Four problems a bank app does not solve, each paired
+   with the component that addresses it: cryptic statements and Naive Bayes,
+   noisy spending and the Bayesian forecast, hidden fraud and the noisy-OR score,
+   alert fatigue and expected-utility decisions. Stress the last pair: deciding
+   when to speak matters as much as what to say.
 
-3. **PEAS and agent type.** Performance, Environment, Actuators, Sensors table.
-   Model-based, utility-based, learning agent. Partially observable, stochastic,
-   sequential environment.
+3. **Agent architecture.** The six-step loop: perceive, interpret, update
+   beliefs, decide, act, learn, with feedback closing the loop. Then PEAS and the
+   agent type: model-based, utility-based, learning. Mention that three policies
+   share this loop, so the evaluation isolates the decision layer.
 
-4. **Architecture.** `outputs/architecture.png`. Walk the six stages:
-   perceive, interpret, state, decide, act, learn.
+4. **Core AI algorithms.** Five cards, one formula and one result each: Naive
+   Bayes (87.9% on six unseen months), noisy-OR (F1 0.81 vs 0.40), Bayesian
+   forecast, expected utility (71% alert precision), online learning. Say why
+   median and MAD replace mean and standard deviation.
 
-5. **Perception and categorisation.** Features (tokens, bigrams, amount bucket,
-   time of day, brand hint). Multinomial Naive Bayes formula with smoothing.
-   Online update from corrections. Table: 88% ours, 80% without hint, 54% rules.
-   `outputs/e1_online_learning.png`.
+5. **How SpendSense decides.** Two lanes. Per payment: score, calibrate p = s²,
+   compare the expected cost of NONE, VERIFY and BLOCK. Per category: projection,
+   risk, utilities of INFO, WARN and REALLOCATE against doing nothing. Read the
+   real Food warning on the right and its utilities.
 
-6. **Anomaly scoring.** Four evidence sources and the noisy-OR formula. Why
-   median/MAD. `outputs/e2_anomaly_pr_curve.png`: F1 0.81 vs 0.40.
+6. **Live demonstration.** Four moments from November 2025: a blocked Rs 3,375
+   cinema charge, a held night-time payment to an unknown merchant, a budget
+   re-plan, and a late overspending warning. KPI strip: 5 of 5 anomalies caught,
+   Rs 386 overspend with the agent against Rs 1,196 without.
 
-7. **Forecasting.** Shrinkage between prior and run-rate; uncertainty shrinks with
-   the month. One equation and a sketch.
+7. **Performance and evaluation.** 12 months × 5 seeds against a passive tracker
+   and a rule-based agent. Headlines: 55.3% less overspend than passive tracking,
+   70.6% alert precision against 57.4%, 22 of 25 anomalies caught, ₹3,771 net
+   monthly-budget overspend per year against ₹27,629. Explain the counterfactual:
+   every day has its own seed, so a month is replayed without the agent.
 
-8. **Decision making.** P(over), E[overspend] in closed form. Utilities of NONE,
-   INFO, WARN, REALLOCATE. Fatigue cost, cooldown, margin. Fraud: NONE / VERIFY /
-   BLOCK expected cost. Show one real utility line from the demo log.
+8. **Limitations, future scope and conclusion.** Say the limitations before
+   anyone asks: synthetic environment, responsiveness estimate biased upward,
+   54% on never-seen merchants. Future: randomised holdout warnings, real data
+   through the Account Aggregator framework, text embeddings. Close on the
+   quote and invite questions.
 
-9. **Learning.** Beta posterior for p_act, fatigue scale, categoriser updates,
-   merchant whitelist. `outputs/e3_user_model_learning.png`. Mention the
-   regression-to-the-mean caveat yourself.
+## Live demo plan (2 minutes)
 
-10. **Demonstration.** 6 to 8 lines from `outputs/demo_log.txt`: a BLOCK with its
-    evidence, a WARN with utilities, the month summary table.
-    `outputs/demo_timeline.png` (with vs without agent).
+Run `python main.py demo`, scroll to one BLOCK and one WARN, then to the month
+summary. Keep `outputs/demo_log.txt` open as a backup in case the terminal is
+slow.
 
-11. **Evaluation.** `outputs/e3_policy_comparison.png` and `outputs/e4_sensitivity.png`.
-    Headline: 55% less overspend vs 47% for rules, alert precision 71% vs 57%,
-    net overspend Rs 3.8k vs 6.4k vs 27.6k. Say what the baselines are and how
-    the counterfactual is obtained.
+## If asked for more detail
 
-12. **Limitations, future work, conclusion.** Synthetic data, confounded
-    responsiveness estimate, Naive Bayes independence, tiny budgets. Future:
-    randomised holdout warnings, real statements, richer text model, notification
-    timing as a bandit.
-
-Live demo plan (2 minutes): run `python main.py demo`, scroll to one BLOCK and one
-WARN, then to the summary. Have the log file open as a backup in case the
-terminal is slow.
+The figures in `outputs/` are not on the slides but are in the report: the
+confusion matrix, the online-learning curve, the precision-recall curve, the
+user-model learning plot and the sensitivity trade-off. `VIVA_NOTES.md` has
+spoken answers to the likely questions.
