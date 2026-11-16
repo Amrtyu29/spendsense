@@ -1,0 +1,226 @@
+==============================================================================
+ SpendSense - Smart Expense & Budget Agent : demonstration
+==============================================================================
+
+Training history: 569 transactions over 6 months (6 flagged anomalies excluded from the detector's statistics).
+Categoriser vocabulary: 241 features; prior P(user acts on warning) = 0.60
+
+Budgets proposed by the agent (110% of the historical monthly mean, user can edit):
+  category        hist. mean    budget   type
+  Bills                1,772     1,950   fixed
+  Education              168       200   run-rate (sparse)
+  Entertainment        1,035     1,150   run-rate (sparse)
+  Food                 4,633     5,100   run-rate
+  Groceries            3,522     3,850   run-rate
+  Health                 916     1,000   run-rate (sparse)
+  Rent                 6,000     6,600   fixed
+  Shopping             2,050     2,250   run-rate (sparse)
+  Transfer             2,895     3,200   run-rate (sparse)
+  Transport            1,859     2,050   run-rate
+
+Running the agent for November 2025. Legend: predicted category + confidence, <risk> = anomaly score >= 30%, (true: X) marks a mis-categorisation.
+
+--- Sat 01 Nov 2025 ---
+  18:47  Rs      95  IMPS/9275911580/BIGBASKET              -> Groceries      98%
+  19:50  Rs     165  CARD 6922 UPI TRANSFER TO ANJALI PALAK -> Transfer       98%
+  21:35  Rs     155  KFC                                    -> Food           94%
+
+--- Sun 02 Nov 2025 ---
+  11:39  Rs   6,000  PG RENT PAYMENT 3992005081             -> Rent           98%
+  12:46  Rs     240  UPI/AMAZON PAY INDIA/5834441242        -> Shopping      100%
+  20:57  Rs   3,375  PVR CINEMAS                            -> Entertainment 100%  <risk 100%>
+  22:31  Rs      35  SWIGGY PAYMENT 8033263878              -> Food          100%
+  >> [BLOCK] Block and alert user: Rs 3,375 'PVR CINEMAS' at 02 Nov 20:57 (risk 100%: amount is 7.3 robust-SD above normal for this category).
+     utilities: NONE=-3524.7, VERIFY=-432.5, BLOCK=-0.1
+
+--- Mon 03 Nov 2025 ---
+  10:48  Rs      90  UPI-DOMINOS PIZZA-8990653666@okaxis    -> Food          100%
+  10:54  Rs     200  POS NETFLIX ENTERTAINMENT SERVICES PAL -> Entertainment 100%
+  14:38  Rs     135  CARD 1897 ANNAPOORNA MESS COIMBATORE   -> Food          100%
+  21:39  Rs     400  INFINITI RETAIL PAYMENT 4619059153     -> Groceries      68%  (true: Shopping)
+
+--- Tue 04 Nov 2025 ---
+  08:15  Rs     170  IMPS/2830740642/CHAI POINT             -> Food          100%
+  10:30  Rs   4,350  1MG TECHNOLOGIES                       -> Health         96%
+  21:41  Rs      60  UPI/REDBUS/8376075934                  -> Transport      97%
+  >> [VERIFY] Hold and ask user to confirm: Rs 4,350 '1MG TECHNOLOGIES' at 04 Nov 10:30 (risk 26%: merchant never seen before).
+     utilities: NONE=-292.9, VERIFY=-109.3, BLOCK=-2173.7
+
+--- Wed 05 Nov 2025 ---
+  06:11  Rs      95  POS ANNAPURNA HOTEL KOCHI              -> Food          100%
+  07:39  Rs      70  PAYMENT TO IRCTC                       -> Transport     100%
+  09:20  Rs     145  UPI-JUBILANT FOODWORKS-1593266810@okax -> Food          100%
+  13:37  Rs     295  UPI/BHARTI AIRTEL LTD/1135761438       -> Bills         100%
+  20:59  Rs     115  UPI-PARAGON RESTAURANT-2685639250@okax -> Food           50%
+  >> [ASK_CATEGORY] Not sure about 'UPI-PARAGON RESTAURANT-2685639250@okaxis' (Rs 115): guessed Food (50%).
+  >> [WARN] Food: Rs 940 spent by day 5 (18% of Rs 5,100). Projected Rs 5,001 +/- 897; 46% chance of overspending by about Rs 311. Keep Food under Rs 166/day for the remaining 25 days.
+     utilities: NONE=0.0, WARN=66.4, INFO=41.2, REALLOCATE=None  (p_act=0.6)
+
+--- Thu 06 Nov 2025 ---
+
+--- Fri 07 Nov 2025 ---
+  15:05  Rs      75  UPI-IITPKD CANTEEN-8156669497@okaxis   -> Food          100%
+  16:57  Rs      70  IMPS/1826304947/KFC                    -> Food           98%
+  >> [INFO] Shopping: Rs 640 spent by day 7 (28% of Rs 2,250). Projected Rs 2,295 +/- 677; 53% chance of overspending by about Rs 293.
+     utilities: NONE=0.0, WARN=10.1, INFO=28.4, REALLOCATE=None  (p_act=0.6)
+
+--- Sat 08 Nov 2025 ---
+  08:17  Rs      70  POS INDIAN RAILWAYS BANGALORE          -> Transport     100%
+  09:47  Rs      80  UBER TRIP PAYMENT 4447140568           -> Transport     100%
+  19:26  Rs      60  UPI-IOCL PETROL BUNK-3821507085@okaxis -> Education      18%  (true: Transport)
+  22:23  Rs      25  DOMINOS PIZZA PAYMENT 4917015898       -> Food          100%
+  >> [ASK_CATEGORY] Not sure about 'UPI-IOCL PETROL BUNK-3821507085@okaxis' (Rs 60): guessed Education (18%).
+
+--- Sun 09 Nov 2025 ---
+  09:02  Rs      48  OLA CABS                               -> Transport     100%
+  12:03  Rs      60  ANNAPURNA HOTEL PAYMENT 9648319340     -> Food          100%
+  14:09  Rs     120  ZOMATO                                 -> Food          100%
+  16:33  Rs     360  POS XEROX SHOP ONLINE                  -> Education      98%
+  17:05  Rs      42  CARD 2857 IOCL PETROL BUNK PALAKKAD    -> Transport     100%
+  19:47  Rs      23  PAYMENT TO ANNAPOORNA MESS             -> Food          100%
+  >> [REALLOCATE] Education: projected Rs 639 vs budget Rs 200 (P(over) = 100%). Other categories are under budget; suggest moving Rs 450 from Groceries to Education.
+     utilities: NONE=0.0, WARN=-170.7, INFO=-26.6, REALLOCATE=250.8  (p_act=0.6)
+
+--- Mon 10 Nov 2025 ---
+  06:02  Rs     110  UPI-CAMPUS CANTEEN-5040377224@okaxis   -> Food          100%
+  10:10  Rs     625  POS KERALA STATE ELECTRICITY THRISSUR  -> Bills         100%
+  19:13  Rs      70  ZOMATO ONLINE                          -> Food          100%
+
+--- Tue 11 Nov 2025 ---
+  08:25  Rs     145  IMPS/9266344183/ANNAPOORNA MESS        -> Food          100%
+  12:45  Rs     200  POS IITPKD CANTEEN ONLINE              -> Food          100%
+  16:48  Rs     380  ZEPTO                                  -> Groceries      91%
+
+--- Wed 12 Nov 2025 ---
+  14:20  Rs     110  UPI-IRCTC RAIL TICKET-5343665970@okaxi -> Transport     100%
+  21:10  Rs      70  PAYMENT TO PARAGON BIRYANI             -> Entertainment  22%  (true: Food)
+  >> [ASK_CATEGORY] Not sure about 'PAYMENT TO PARAGON BIRYANI' (Rs 70): guessed Entertainment (22%).
+
+--- Thu 13 Nov 2025 ---
+  09:16  Rs      90  IMPS/4779679623/DOMINOS PIZZA          -> Food          100%
+  18:08  Rs      85  UPI/INDIAN RAILWAYS/5186356364         -> Transport     100%
+
+--- Fri 14 Nov 2025 ---
+  08:44  Rs      43  POS ZOMATO ONLINE                      -> Food          100%
+  09:00  Rs     190  UPI/MORE RETAIL LTD/2052526702         -> Groceries      70%
+  16:26  Rs     100  UPI-XEROX SHOP-9704349298@okaxis       -> Education      99%
+  21:31  Rs     235  UPI-IITPKD CANTEEN-3717515825@okaxis   -> Food          100%
+  21:37  Rs     190  PAYMENT TO PVR CINEMAS                 -> Entertainment 100%
+
+--- Sat 15 Nov 2025 ---
+  08:29  Rs      95  PAYMENT TO JUBILANT FOODWORKS          -> Food          100%
+  08:43  Rs      90  IMPS/4928733015/UBER INDIA SYSTEMS     -> Transport     100%
+  19:18  Rs   3,200  RELIANCE RETAIL LTD                    -> Groceries      99%  <risk 98%>
+  19:49  Rs     750  ACT FIBERNET                           -> Bills         100%
+  21:45  Rs      80  REDBUS PAYMENT 9570475881              -> Transport      96%
+  >> [BLOCK] Block and alert user: Rs 3,200 'RELIANCE RETAIL LTD' at 15 Nov 19:18 (risk 98%: amount is 4.7 robust-SD above normal for this category).
+     utilities: NONE=-3212.7, VERIFY=-401.3, BLOCK=-71.7
+
+--- Sun 16 Nov 2025 ---
+  07:17  Rs     190  CARD 3559 YUM RESTAURANTS INDIA ONLINE -> Groceries      21%  (true: Food)
+  08:44  Rs     100  PAYMENT TO ANNAPURNA HOTEL             -> Food          100%
+  11:10  Rs     200  UPI/PARAGON RESTAURANT/4833752446      -> Food           87%
+  18:28  Rs      65  RAPIDO PAYMENT 2506190031              -> Transport     100%
+  19:43  Rs   1,260  CARD 6323 RELIANCE FRESH BANGALORE     -> Groceries     100%  <risk 39%>
+  >> [ASK_CATEGORY] Not sure about 'CARD 3559 YUM RESTAURANTS INDIA ONLINE' (Rs 190): guessed Groceries (21%).
+  >> [VERIFY] Hold and ask user to confirm: Rs 1,260 'CARD 6323 RELIANCE FRESH BANGALORE' at 16 Nov 19:43 (risk 39%: amount is 3.0 robust-SD above normal for this category).
+     utilities: NONE=-215.3, VERIFY=-101.5, BLOCK=-660.9
+
+--- Mon 17 Nov 2025 ---
+  16:03  Rs     225  OLA CABS                               -> Transport     100%
+  17:13  Rs     130  SWIGGY FOOD ORDER PAYMENT 7816118442   -> Food          100%
+  >> [WARN] Food: Rs 2,991 spent by day 17 (59% of Rs 5,100). Projected Rs 5,333 +/- 491; 68% chance of overspending by about Rs 334. Keep Food under Rs 162/day for the remaining 13 days.
+     utilities: NONE=0.0, WARN=112.4, INFO=55.9, REALLOCATE=None  (p_act=0.67)
+  >> [WARN] Groceries: Rs 1,925 spent by day 17 (57% of Rs 3,400). Projected Rs 4,028 +/- 688; 82% chance of overspending by about Rs 696. Keep Groceries under Rs 113/day for the remaining 13 days.
+     utilities: NONE=0.0, WARN=255.1, INFO=114.1, REALLOCATE=None  (p_act=0.67)
+
+--- Tue 18 Nov 2025 ---
+  03:41  Rs   1,710  CARD 7337 CRYPTOX EXCHANGE KOCHI       -> Transfer       25%  <risk 72%>
+  >> [VERIFY] Hold and ask user to confirm: Rs 1,710 'CARD 7337 CRYPTOX EXCHANGE KOCHI' at 18 Nov 03:41 (risk 72%: merchant never seen before; payment between midnight and 6 am).
+     utilities: NONE=-965.4, VERIFY=-176.5, BLOCK=-483.4
+  >> [ASK_CATEGORY] Not sure about 'CARD 7337 CRYPTOX EXCHANGE KOCHI' (Rs 1,710): guessed Transfer (25%).
+
+--- Wed 19 Nov 2025 ---
+  07:14  Rs     200  UPI/HINDUSTAN PETROLEUM/2451928272     -> Transport      99%
+
+--- Thu 20 Nov 2025 ---
+  13:01  Rs     240  ANNAPOORNA MESS                        -> Food          100%
+  15:02  Rs      95  PAYMENT TO JUBILANT FOODWORKS          -> Food          100%
+  19:53  Rs     105  PARAGON RESTAURANT                     -> Food           88%
+
+--- Fri 21 Nov 2025 ---
+  11:13  Rs      90  IMPS/5492875236/ZEPTO                  -> Groceries      93%
+  14:22  Rs      80  PAYMENT TO ZOMATO MEDIA PVT LTD        -> Food          100%
+  17:03  Rs      80  UPI/SWIGGY FOOD ORDER/1286184735       -> Food          100%
+
+--- Sat 22 Nov 2025 ---
+  08:34  Rs     340  UPI-AMAZON PAY INDIA-9678612579@okaxis -> Shopping      100%
+  12:20  Rs      65  PAYMENT TO SWIGGY                      -> Food          100%
+  16:39  Rs      60  UPI-BB DAILY-9422765909@okaxis         -> Groceries      98%
+  20:23  Rs     210  POS HINDUSTAN PETROLEUM COIMBATORE     -> Transport      99%
+
+--- Sun 23 Nov 2025 ---
+  11:33  Rs     120  UPI-SWIGGY-5216132213@okaxis           -> Food          100%
+  14:54  Rs     110  UPI/KFC/7039276014                     -> Food           98%
+  19:16  Rs      55  UPI-PARAGON BIRYANI-1054171016@okaxis  -> Food           87%
+
+--- Mon 24 Nov 2025 ---
+
+--- Tue 25 Nov 2025 ---
+  08:19  Rs     455  POS MORE RETAIL LTD KOCHI              -> Groceries      61%
+  18:09  Rs     580  AVENUE SUPERMARTS PAYMENT 9169405127   -> Groceries      99%
+  >> [WARN] Groceries: Rs 3,110 spent by day 25 (91% of Rs 3,400). Projected Rs 3,824 +/- 259; 95% chance of overspending by about Rs 430. Keep Groceries under Rs 58/day for the remaining 5 days.
+     utilities: NONE=0.0, WARN=50.3, INFO=34.2, REALLOCATE=None  (p_act=0.75)
+
+--- Wed 26 Nov 2025 ---
+  07:05  Rs     205  IMPS/1076903683/CANTEEN COUNTER        -> Food          100%
+  08:33  Rs     230  PAYMENT TO CHAI POINT                  -> Food          100%
+  13:42  Rs     150  UPI/FASHNEAR TECHNOLOGIES/7714941781   -> Health         37%  (true: Shopping)
+  18:53  Rs     140  KSRTC BUS                              -> Transport     100%
+  >> [ASK_CATEGORY] Not sure about 'UPI/FASHNEAR TECHNOLOGIES/7714941781' (Rs 150): guessed Health (37%).
+
+--- Thu 27 Nov 2025 ---
+  10:39  Rs     280  IMPS/7500833531/PARAGON RESTAURANT     -> Food           61%
+  10:48  Rs     100  UPI/YUM RESTAURANTS INDIA/5881537557   -> Food           92%
+  15:10  Rs      70  PARAGON RESTAURANT PAYMENT 3966680251  -> Food           89%
+  16:51  Rs      65  UPI/IITPKD CANTEEN/8685389681          -> Food          100%
+  20:38  Rs      85  PAYMENT TO ANNAPURNA HOTEL             -> Food          100%
+
+--- Fri 28 Nov 2025 ---
+  11:48  Rs     115  UPI-BB DAILY-8445329533@okaxis         -> Groceries      99%
+  17:02  Rs     170  PAYMENT TO UPI TRANSFER TO ANJALI      -> Transfer       98%
+
+--- Sat 29 Nov 2025 ---
+  04:46  Rs   2,780  CARD 6004 INTL PMT GLOBALPAY BANGALORE -> Entertainment  18%  <risk 100%>  (true: Transfer)
+  14:54  Rs      85  PARAGON RESTAURANT                     -> Food           89%
+  >> [BLOCK] Block and alert user: Rs 2,780 'CARD 6004 INTL PMT GLOBALPAY BANGALORE' at 29 Nov 04:46 (risk 100%: amount is 6.8 robust-SD above normal for this category; merchant never seen before; payment between midnight and 6 am).
+     utilities: NONE=-2929.8, VERIFY=-373.0, BLOCK=-0.1
+  >> [ASK_CATEGORY] Not sure about 'CARD 6004 INTL PMT GLOBALPAY BANGALORE' (Rs 2,780): guessed Entertainment (18%).
+
+--- Sun 30 Nov 2025 ---
+  18:35  Rs     165  UPI/CAMPUS CANTEEN/7920982189          -> Food          100%
+  19:02  Rs      90  IMPS/6569267932/SREE KRISHNA STORES    -> Groceries     100%
+  20:16  Rs   1,040  DECATHLON PAYMENT 4249266850           -> Shopping       99%
+
+==============================================================================
+ Month summary: November 2025
+==============================================================================
+  category         budget  adjusted     spent  no-agent   status
+  Bills             1,950         -     1,670     1,670   ok
+  Education           200       650       460       460   OVER by Rs 260
+  Entertainment     1,150         -       390       390   ok
+  Food              5,100         -     5,226     6,036   OVER by Rs 126
+  Groceries         3,850     3,400     3,315     3,465   ok
+  Health            1,000         -         0         0   ok
+  Rent              6,600         -     6,000     6,000   ok
+  Shopping          2,250         -     2,170     2,170   ok
+  Transfer          3,200         -       335       335   ok
+  Transport         2,050         -     1,635     1,635   ok
+
+  Category overspend vs original budgets: with agent Rs 386, without agent Rs 1,196
+  Net overspend of the whole monthly budget: with agent Rs 0, without agent Rs 0
+  Alerts: 5 budget alerts, 1 reallocations; user responded 4x, dismissed 0x
+  Anomalies: 5 present, 5 caught, 1 false flags
+  Learned user model: P(acts on warning) = 0.75, fatigue scale = 0.92; categoriser received 5 answers to its questions
+
+Log saved to C:\Users\aarshad\OneDrive\Desktop\AI project\outputs\demo_log.txt; timeline plot saved to C:\Users\aarshad\OneDrive\Desktop\AI project\outputs\demo_timeline.png
