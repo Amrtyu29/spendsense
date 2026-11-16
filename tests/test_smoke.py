@@ -80,6 +80,26 @@ def test_agent_month_runs_and_reports():
     assert s["total_overspend"] >= 0 and s["anomalies_flagged_tp"] <= s["anomalies_present"]
 
 
+def test_dashboard_engine_replays_and_applies_feedback():
+    from expense_agent.app_engine import Feedback, replay
+    full = replay("demo", simulate_user=True)
+    part = replay("demo", upto_day=10, simulate_user=True)
+    assert part["day"] == 10 and len(part["transactions"]) < len(full["transactions"])
+    manual = replay("demo", simulate_user=False)
+    tx = manual["transactions"]
+    held = tx[tx["status"] == "held for review"]
+    assert len(held) > 0
+    fb = Feedback()
+    fb.payments[int(held.iloc[0]["txn_id"])] = "confirm_fraud"
+    wrong = tx[tx["category"] != tx["true category"]]
+    if len(wrong):
+        fb.categories[int(wrong.iloc[0]["txn_id"])] = wrong.iloc[0]["true category"]
+    after = replay("demo", simulate_user=False, feedback=fb)["transactions"]
+    assert (after["status"] == "fraud (excluded)").sum() == 1
+    for tid, cat in fb.categories.items():
+        assert after[after["txn_id"] == tid].iloc[0]["category"] == cat
+
+
 if __name__ == "__main__":
     tests = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
     for t in tests:

@@ -2,6 +2,7 @@
 
 Usage
 -----
+python main.py app                    open the dashboard in your browser
 python main.py demo [--seed 7]        one month, day by day, with explanations
 python main.py evaluate [--quick]     all experiments -> outputs/RESULTS.md + plots
 python main.py generate [--months 12] write data/sample_transactions.csv
@@ -39,7 +40,13 @@ def main() -> None:
     p = sub.add_parser("evaluate"); p.add_argument("--quick", action="store_true")
     p = sub.add_parser("generate"); p.add_argument("--months", type=int, default=12)
     p = sub.add_parser("csv"); p.add_argument("--path", required=True)
+    sub.add_parser("app")
     args = ap.parse_args()
+    if args.cmd == "app":
+        import subprocess
+        import sys
+        raise SystemExit(subprocess.call([sys.executable, "-m", "streamlit", "run", str(ROOT / "app.py"),
+                                          "--browser.gatherUsageStats", "false"]))
     if args.cmd == "demo":
         from expense_agent.demo import run_demo
         run_demo(args.seed)

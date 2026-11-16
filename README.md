@@ -20,11 +20,36 @@ forecasting, expected-utility decision making and Beta-Bernoulli learning.
 | [VIVA_NOTES.md](VIVA_NOTES.md) | Likely viva questions with answers |
 | [PRESENTATION_OUTLINE.md](PRESENTATION_OUTLINE.md) | Slide-by-slide talking points for the presentation and the live demo plan |
 
-## Quick start
+## Use the app
 
 ```bash
 pip install -r requirements.txt
 ```
+
+```bash
+python main.py app
+```
+
+On Windows you can also double-click `run_app.bat`. The dashboard opens in your
+browser at `http://localhost:8501` and runs entirely on your computer.
+
+- **Choose the data.** The demo month, or your own bank / UPI statement as a CSV
+  with the columns `date`, `description`, `amount` (and optionally `time`).
+- **Move the day slider** to watch the agent work through the month.
+- **Budgets tab:** spend, projected month-end and the chance of overspending per
+  category, with a chart of spending against the budget.
+- **Agent decisions tab:** every alert in order, each with the expected
+  utilities that made the agent choose it.
+- **Payments to review tab:** payments the agent held, with the evidence. Answer
+  "It was me" or "Not me".
+- **Transactions tab:** correct a category and the agent learns it immediately.
+- **What the agent learned tab:** how its picture of you has changed.
+
+Turn off "Simulated user reacts to alerts" in the sidebar to answer the agent
+yourself. The slider "How much do alerts bother you?" is the fatigue cost in the
+utility formula.
+
+## Command line
 
 ```bash
 python main.py demo
@@ -60,7 +85,10 @@ python tests/test_smoke.py
 
 ```
 main.py                      command-line entry point
+app.py                       the dashboard (Streamlit)
+run_app.bat                  double-click launcher for Windows
 expense_agent/
+  app_engine.py              replays the agent to any day and applies your feedback
   data_gen.py                synthetic UPI/bank environment with injected anomalies
   categorizer.py             Multinomial Naive Bayes (online) + keyword-rule baseline
   anomaly.py                 noisy-OR anomaly scorer + two baselines
