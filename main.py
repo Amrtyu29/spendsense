@@ -6,6 +6,7 @@ python main.py app                    open the dashboard in your browser
 python main.py demo [--seed 7]        one month, day by day, with explanations
 python main.py evaluate [--quick]     all experiments -> outputs/RESULTS.md + plots
 python main.py generate [--months 12] write data/sample_transactions.csv
+python main.py demodata               write the ready-made demo statements to data/demo/
 python main.py csv --path FILE        run the agent on your own statement export
 """
 from __future__ import annotations
@@ -41,7 +42,15 @@ def main() -> None:
     p = sub.add_parser("generate"); p.add_argument("--months", type=int, default=12)
     p = sub.add_parser("csv"); p.add_argument("--path", required=True)
     sub.add_parser("app")
+    sub.add_parser("demodata")
     args = ap.parse_args()
+    if args.cmd == "demodata":
+        import pandas as pd
+        from expense_agent.demo_data import DEMO_DIR, write_demo_data
+        summary = pd.DataFrame(write_demo_data())
+        print(f"wrote demo statements to {DEMO_DIR}")
+        print(summary.to_string(index=False))
+        return
     if args.cmd == "app":
         import subprocess
         import sys

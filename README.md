@@ -33,8 +33,10 @@ python main.py app
 On Windows you can also double-click `run_app.bat`. The dashboard opens in your
 browser at `http://localhost:8501` and runs entirely on your computer.
 
-- **Choose the data.** The demo month, or your own bank / UPI statement as a CSV
-  with the columns `date`, `description`, `amount` (and optionally `time`).
+- **Choose the data.** The demo month, one of the ready-made demo statements in
+  `data/demo/` (an ordinary month, an overspending month, suspicious payments),
+  or your own bank / UPI statement as a CSV with the columns `date`,
+  `description`, `amount` (and optionally `time`). See [data/README.md](data/README.md).
 - **Move the day slider** to watch the agent work through the month.
 - **Budgets tab:** spend, projected month-end and the chance of overspending per
   category, with a chart of spending against the budget.
@@ -89,6 +91,7 @@ app.py                       the dashboard (Streamlit)
 run_app.bat                  double-click launcher for Windows
 expense_agent/
   app_engine.py              replays the agent to any day and applies your feedback
+  demo_data.py               builds the ready-made demo statements in data/demo/
   data_gen.py                synthetic UPI/bank environment with injected anomalies
   categorizer.py             Multinomial Naive Bayes (online) + keyword-rule baseline
   anomaly.py                 noisy-OR anomaly scorer + two baselines

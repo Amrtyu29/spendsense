@@ -18,6 +18,7 @@ from expense_agent.data_gen import CATEGORIES
 
 ROOT = Path(__file__).resolve().parent
 SAMPLE = ROOT / "data" / "statement_unlabelled.csv"
+DEMO = ROOT / "data" / "demo"
 COLORS = {"WARN": "#F5A524", "INFO": "#2F80FF", "REALLOCATE": "#8B6CFF", "VERIFY": "#F5A524",
           "BLOCK": "#FF5C7A", "ASK_CATEGORY": "#19C6B5"}
 LABELS = {"WARN": "Warning", "INFO": "Heads-up", "REALLOCATE": "Re-plan budget", "VERIFY": "Please confirm",
@@ -58,13 +59,19 @@ with st.sidebar:
                              help="On: a simulated person responds to warnings, so you can compare with and without the agent. Off: you are the user and answer the agent yourself.")
         year, month = demo_month()
     else:
-        up = st.file_uploader("Statement CSV", type=["csv"])
-        use_sample = st.checkbox("Use the bundled sample statement", value=up is None)
+        bundled = {"Demo: an ordinary month": DEMO / "1_normal_month.csv",
+                   "Demo: an overspending month": DEMO / "2_overspending_month.csv",
+                   "Demo: suspicious payments": DEMO / "3_suspicious_payments.csv",
+                   "Sample: twelve months": SAMPLE}
+        bundled = {k: v for k, v in bundled.items() if v.exists()}
+        choice = st.selectbox("Statement", list(bundled) + ["Upload my own file"],
+                              help="The demo files are in data/demo/. Each shows a different situation. Use my_statement_template.csv there as a starting point for your own.")
+        up = st.file_uploader("Statement CSV", type=["csv"]) if choice == "Upload my own file" else None
         try:
             if up is not None:
                 statement = load_statement(up)
-            elif use_sample and SAMPLE.exists():
-                statement = load_statement(SAMPLE)
+            elif choice in bundled:
+                statement = load_statement(bundled[choice])
         except Exception as e:  # show a readable message instead of a stack trace
             st.error(str(e))
         if statement is not None:
@@ -72,7 +79,7 @@ with st.sidebar:
             ym = st.selectbox("Month", months, index=len(months) - 1, format_func=lambda t: f"{pd.Timestamp(t[0], t[1], 1):%B %Y}")
             year, month = ym
     if source == "statement" and statement is None:
-        st.info("Upload a statement, or tick the sample statement box.")
+        st.info("Choose a CSV file to upload, or pick one of the demo statements above.")
         st.stop()
 
     days = pd.Timestamp(year, month, 1).days_in_month
@@ -200,7 +207,7 @@ with t_pay:
             a.write(f"Why: {r['evidence']}.")
             b.metric("Amount", rs(r["amount"]))
             if r["status"] == "held for review" and manual:
-                c = st.columns([1.2, 1.5, 6])
+                c = st.columns([2, 2.6, 5])
                 if c[0].button("It was me", key=f"ok{i}"):
                     fb.payments[f["txn_id"]] = "legit"; st.rerun()
                 if c[1].button("Not me (fraud)", key=f"bad{i}"):
@@ -230,7 +237,7 @@ with t_tx:
         if manual:
             st.caption("Change a category in the table to correct the agent. It updates its model immediately and uses your label from then on.")
             ed = st.data_editor(view[["txn_id"] + cols], hide_index=True, width="stretch", column_config={**config, "txn_id": None},
-                                disabled=[c for c in cols if c != "category"], key=f"tx_{res['day']}_{len(fb.categories)}_{source}")
+                                disabled=[c for c in cols if c != "category"], key=f"tx_{res['day']}_{len(fb.categories)}_{source}_{res['label']}_{len(tx)}")
             changed = ed[ed["category"].values != view["category"].values]
             if len(changed):
                 for _, r in changed.iterrows():
